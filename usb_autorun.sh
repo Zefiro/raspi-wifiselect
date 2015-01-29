@@ -6,6 +6,7 @@ MARKER=${DIR}/igor
 ROOTSCRIPT=${DIR}/autorun.sh
 WIFIFILE=${DIR}/wifi.txt
 WFCFILE=${USBPATH}/SMRTNTKY/WSETTING.WFC
+OWNDIR=`dirname $BASH_SOURCE`
 
 autorun() {
     /usr/bin/logger -t usbauto Running autorun with ${1}, ${2}
@@ -19,12 +20,12 @@ autorun() {
     fi
 
     if [ -f ${WIFIFILE} ]; then
-	/root/bin/wifiselect.js USB > ${DIR}/stdout_wifi.txt 2> ${DIR}/stderr_wifi.txt
+	$OWNDIR/wifiselect.js USB > ${DIR}/stdout_wifi.txt 2> ${DIR}/stderr_wifi.txt
     fi
 
     if [ -f ${WFCFILE} ]; then
 	if [ ! -d ${DIR} ]; then mkdir ${DIR}; fi
-	/root/bin/wifiselect.js WFC > ${DIR}/stdout_wfc.txt 2> ${DIR}/stderr_wfc.txt
+	$OWNDIR/wifiselect.js WFC > ${DIR}/stdout_wfc.txt 2> ${DIR}/stderr_wfc.txt
     fi
 }
 

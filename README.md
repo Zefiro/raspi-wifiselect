@@ -52,11 +52,11 @@ wpa_passphrase <SSID> >> /etc/wpa_supplicant/wpa_supplicant.conf
   * clone this repository onto the Raspi, e.g. to */root/bin* and ensure the scripts are executable
   * in the same directory, install the node modules:
 ```
-npm install q fs path request child-process child-process-promise
+npm install q fs path request child-process-promise xml2js
 ```
   * add a rule to UDEV, e.g. in a file */etc/udev/rules.d/70-persistent-usb_autorun.rules*
 ```
-SUBSYSTEM=="block", KERNEL=="sd*1", ACTION=="add", SYMLINK+="usbstick%n", RUN+="/root/bin/usb_autorun.sh %E{ID_FS_LABEL} %E{ID_FS_UUID}"
+SUBSYSTEM=="block", KERNEL=="sd*1", ACTION=="add", SYMLINK+="usbstick%n", RUN+="/root/bin/raspi-wifiselect/usb_autorun.sh %E{ID_FS_LABEL} %E{ID_FS_UUID}"
 ```
 this triggers on adding of a new device matching "sd\*1" (e.g. sda1), creating a symlink to ensure it's available at the constant name */dev/usbstick1* (1 = partition number), then runs the autorun script, which will access it
   * **Security Note:** The *autorun.sh* feature will run a user-supplied script with root permissions! It's advised to disable this part of *usb_autorun.sh*
@@ -65,12 +65,15 @@ this triggers on adding of a new device matching "sd\*1" (e.g. sda1), creating a
     * [Automount USB drives with no GUI requirement (halevt replacement)](http://unix.stackexchange.com/questions/11472/automount-usb-drives-with-no-gui-requirement-halevt-replacement)
     * [Autostart script from USB device with Udev](http://www.panticz.de/node/629)
   * install autofs
+```
+apt-get install autofs
+```
     * add in file */etc/auto.master*
 ```
 /media/auto   /etc/auto.ext-usb --timeout=10,defaults,user,exec,uid=1000
 ```
 this will create */media/auto* and automounts when accessed, with umount after 10sec inactivity, and some existing, irrelevant user (uid=1000)
-  * create file */etc/auto.ext-usb*
+    * create file */etc/auto.ext-usb*
 ```
 usbstick            -fstype=auto           :/dev/usbstick1
 ```

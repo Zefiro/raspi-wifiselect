@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/node
 
 var Q = require('q')
 var fs = require('fs')
@@ -246,9 +246,10 @@ var self = {
 	}
 }
 
+var PROGRAM_IS_TERMINATED = false
 
 var args = process.argv.slice(2)
-switch(args[0].toLowerCase()) {
+switch((args[0]+"").toLowerCase()) {
     case "usb2":
         self.usb_wifitxt().done(self.exit, self.fail("ABORTED"))
         break
@@ -264,7 +265,6 @@ switch(args[0].toLowerCase()) {
 }
 
 // all action happens in async callbacks, so we just need to ensure Node keeps running
-var PROGRAM_IS_TERMINATED = false
 (function wait () {
    if (!PROGRAM_IS_TERMINATED) setTimeout(wait, 10)
 })()
